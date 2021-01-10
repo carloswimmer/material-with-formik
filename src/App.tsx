@@ -1,10 +1,12 @@
 import React from 'react';
 import AppProvider from './hooks';
 
+import Employees from './pages/Employees/Employees';
+
 const App: React.FC = () => {
   return (
     <AppProvider>
-      <h1>Material with Formik</h1>
+      <Employees />
     </AppProvider>
   );
 };
