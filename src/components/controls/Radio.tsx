@@ -6,14 +6,23 @@ import {
   FormControlLabel,
   Radio as MuiRadio,
   FormHelperText,
+  RadioGroupProps,
 } from '@material-ui/core';
 
-const Radio = (props) => {
+interface RadioProps extends RadioGroupProps {
+  label: string;
+  items: Array<any>;
+  error?: boolean;
+  helperText?: string | false;
+}
+
+const Radio = (props: RadioProps) => {
   const {
     name,
     label,
     value,
     onChange,
+    onBlur,
     items,
     error,
     helperText,
@@ -21,7 +30,7 @@ const Radio = (props) => {
   } = props;
 
   return (
-    <FormControl component="fieldset" error={error}>
+    <FormControl component="fieldset" error={error} style={{ marginBottom: 6 }}>
       <FormLabel component="legend">{label}</FormLabel>
       <RadioGroup
         row
@@ -29,9 +38,10 @@ const Radio = (props) => {
         name={name}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
         {...others}
       >
-        {items.map((item) => (
+        {items.map((item: any) => (
           <FormControlLabel
             key={item.id}
             value={item.id}
@@ -40,7 +50,7 @@ const Radio = (props) => {
           />
         ))}
       </RadioGroup>
-      <FormHelperText>{helperText}</FormHelperText>
+      {error && <FormHelperText>{helperText}</FormHelperText>}
     </FormControl>
   );
 };
