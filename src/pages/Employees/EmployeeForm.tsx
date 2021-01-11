@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Grid, makeStyles, Theme } from '@material-ui/core';
-import { Formik } from 'formik';
+import { FieldMetaProps, Formik, FormikProps } from 'formik';
 
 import Input from '../../components/controls/Input';
 import Radio from '../../components/controls/Radio';
@@ -71,78 +71,79 @@ const EmployeeForm: React.FC = () => {
     console.log('submitted! ', formValues);
   }, []);
 
+  const handleFieldProps = (
+    formik: FormikProps<FormValuesProps>,
+    id: string,
+  ) => {
+    const { getFieldProps, getFieldMeta } = formik;
+
+    const errorMessage = getFieldMeta(id).touched && getFieldMeta(id).error;
+
+    return {
+      error: !!errorMessage,
+      helperText: errorMessage,
+      ...getFieldProps(id),
+    };
+  };
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={employeeSchema}
       onSubmit={(values) => handleEmployeeSubmit(values)}
     >
-      {({ getFieldProps, handleSubmit, handleReset, touched, errors }) => (
+      {(formik) => (
         <form
           className={classes.root}
           autoComplete="off"
-          onSubmit={handleSubmit}
+          onSubmit={formik.handleSubmit}
         >
           <Grid container spacing={4}>
             <Grid item xs={6}>
               <Input
                 label="Full Name"
                 id="fullName"
-                {...getFieldProps('fullName')}
-                error={touched.fullName && !!errors.fullName}
-                helperText={touched.fullName && errors.fullName}
+                {...handleFieldProps(formik, 'fullName')}
               />
               <Input
                 label="Email"
                 id="email"
-                {...getFieldProps('email')}
-                error={touched.email && !!errors.email}
-                helperText={touched.email && errors.email}
+                {...handleFieldProps(formik, 'email')}
               />
               <Input
                 label="Mobile"
                 id="mobile"
-                {...getFieldProps('mobile')}
-                error={touched.mobile && !!errors.mobile}
-                helperText={touched.mobile && errors.mobile}
+                {...handleFieldProps(formik, 'mobile')}
               />
               <Input
                 label="City"
                 id="city"
-                {...getFieldProps('city')}
-                error={touched.city && !!errors.city}
-                helperText={touched.city && errors.city}
+                {...handleFieldProps(formik, 'city')}
               />
             </Grid>
             <Grid item container xs={6} alignContent="flex-start">
               <Radio
                 label="Gender"
                 id="gender"
-                {...getFieldProps('gender')}
                 items={genderItems}
-                error={touched.gender && !!errors.gender}
-                helperText={touched.gender && errors.gender}
+                {...handleFieldProps(formik, 'gender')}
               />
               <Select
                 label="Department"
                 id="departmentId"
-                {...getFieldProps('departmentId')}
                 options={employeeService.getDepartmentCollection()}
-                error={touched.departmentId && !!errors.departmentId}
-                helperText={touched.departmentId && errors.departmentId}
+                {...handleFieldProps(formik, 'departmentId')}
               />
               <DatePicker
                 label="Hire Date"
                 id="hireDate"
-                {...getFieldProps('hireDate')}
+                {...handleFieldProps(formik, 'hireDate')}
                 helperText="Choose date from the past"
               />
               <Checkbox
                 label="I hereby declare that all information provided is true."
                 id="confirmInfo"
-                {...getFieldProps('confirmInfo')}
-                error={touched.confirmInfo && !!errors.confirmInfo}
-                helperText={touched.confirmInfo && errors.confirmInfo}
+                {...handleFieldProps(formik, 'confirmInfo')}
               />
               <Grid item container justify="flex-end">
                 <Grid item>
@@ -157,7 +158,7 @@ const EmployeeForm: React.FC = () => {
                   <Button
                     size="large"
                     color="default"
-                    onClick={handleReset}
+                    onClick={formik.handleReset}
                     text="Reset"
                   />
                 </Grid>
