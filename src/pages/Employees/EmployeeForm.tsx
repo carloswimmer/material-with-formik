@@ -2,12 +2,11 @@ import React, { useCallback } from 'react';
 import { Grid, makeStyles, Theme } from '@material-ui/core';
 import { useFormik } from 'formik';
 
-// import { useForm, Form } from '../../components/useForm';
 import Input from '../../components/controls/Input';
 import Radio from '../../components/controls/Radio';
 import Select from '../../components/controls/Select';
-// import Checkbox from '../../components/controls/Checkbox';
-// import DatePicker from '../../components/controls/DatePicker';
+import Checkbox from '../../components/controls/Checkbox';
+import DatePicker from '../../components/controls/DatePicker';
 import Button from '../../components/controls/Button';
 import * as Yup from 'yup';
 import * as employeeService from '../../services/employeeService';
@@ -28,7 +27,7 @@ const initialValues: FormValuesProps = {
   gender: 'male',
   departmentId: '',
   hireDate: new Date(),
-  isPermanent: false,
+  confirmInfo: false,
 };
 
 const employeeSchema = Yup.object({
@@ -42,6 +41,7 @@ const employeeSchema = Yup.object({
     'Choose "Other" in this case',
   ),
   departmentId: Yup.string().required('Required'),
+  confirmInfo: Yup.boolean().isTrue('You need to confirm to submit'),
 });
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -61,7 +61,7 @@ interface FormValuesProps {
   gender: 'male' | 'female' | 'other';
   departmentId: string;
   hireDate: Date;
-  isPermanent: boolean;
+  confirmInfo: boolean;
 }
 
 const EmployeeForm: React.FC = () => {
@@ -71,19 +71,13 @@ const EmployeeForm: React.FC = () => {
     console.log('submitted! ', formValues);
   }, []);
 
-  const {
-    handleSubmit,
-    values,
-    handleChange,
-    handleBlur,
-    handleReset,
-    touched,
-    errors,
-  } = useFormik({
+  const formik = useFormik({
     initialValues,
     validationSchema: employeeSchema,
     onSubmit: (values) => handleEmployeeSubmit(values),
   });
+
+  const { getFieldProps, handleSubmit, handleReset, touched, errors } = formik;
 
   return (
     <form className={classes.root} autoComplete="off" onSubmit={handleSubmit}>
@@ -91,35 +85,29 @@ const EmployeeForm: React.FC = () => {
         <Grid item xs={6}>
           <Input
             label="Full Name"
-            name="fullName"
-            value={values.fullName}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            id="fullName"
+            {...getFieldProps('fullName')}
             error={touched.fullName && !!errors.fullName}
             helperText={touched.fullName && errors.fullName}
           />
           <Input
             label="Email"
-            name="email"
-            value={values.email}
-            onChange={handleChange}
-            onBlur={handleBlur}
+            id="email"
+            {...getFieldProps('email')}
             error={touched.email && !!errors.email}
             helperText={touched.email && errors.email}
           />
           <Input
             label="Mobile"
-            name="mobile"
-            value={values.mobile}
-            onChange={handleChange}
+            id="mobile"
+            {...getFieldProps('mobile')}
             error={touched.mobile && !!errors.mobile}
             helperText={touched.mobile && errors.mobile}
           />
           <Input
             label="City"
-            name="city"
-            value={values.city}
-            onChange={handleChange}
+            id="city"
+            {...getFieldProps('city')}
             error={touched.city && !!errors.city}
             helperText={touched.city && errors.city}
           />
@@ -127,38 +115,33 @@ const EmployeeForm: React.FC = () => {
         <Grid item container xs={6} alignContent="flex-start">
           <Radio
             label="Gender"
-            name="gender"
-            value={values.gender}
+            id="gender"
+            {...getFieldProps('gender')}
             items={genderItems}
-            onChange={handleChange}
-            onBlur={handleBlur}
             error={touched.gender && !!errors.gender}
             helperText={touched.gender && errors.gender}
           />
           <Select
             label="Department"
-            name="departmentId"
-            value={values.departmentId}
+            id="departmentId"
+            {...getFieldProps('departmentId')}
             options={employeeService.getDepartmentCollection()}
-            onChange={handleChange}
-            onBlur={handleBlur}
             error={touched.departmentId && !!errors.departmentId}
             helperText={touched.departmentId && errors.departmentId}
           />
-          {/* 
-          
           <DatePicker
             label="Hire Date"
-            name="hireDate"
-            value={values.hireDate}
-            onChange={handleInputChange}
+            id="hireDate"
+            {...getFieldProps('hireDate')}
+            helperText="Choose date from the past"
           />
           <Checkbox
-            label="Permanent Employee"
-            name="isPermanent"
-            value={values.isPermanent}
-            onChange={handleInputChange}
-          /> */}
+            label="I hereby declare that all information provided is true."
+            id="confirmInfo"
+            {...getFieldProps('confirmInfo')}
+            error={touched.confirmInfo && !!errors.confirmInfo}
+            helperText={touched.confirmInfo && errors.confirmInfo}
+          />
           <Grid item container justify="flex-end">
             <Grid item>
               <Button

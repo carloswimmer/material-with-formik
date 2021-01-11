@@ -1,12 +1,21 @@
-import React, { useCallback } from "react";
-import DateFnsUtils from "@date-io/date-fns";
+import React, { useCallback } from 'react';
+import DateFnsUtils from '@date-io/date-fns';
 import {
   KeyboardDatePicker,
   MuiPickersUtilsProvider,
-} from "@material-ui/pickers";
+} from '@material-ui/pickers';
 
 const DatePicker = (props) => {
-  const { name, label, value, onChange, ...others } = props;
+  const {
+    name,
+    label,
+    value,
+    onChange,
+    onBlur,
+    error,
+    helperText,
+    ...others
+  } = props;
 
   const convertDateToValue = useCallback((name, value) => {
     const convertedDate = {
@@ -19,21 +28,25 @@ const DatePicker = (props) => {
   }, []);
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <KeyboardDatePicker
-        label={label}
-        name={name}
-        inputVariant="outlined"
-        fullWidth
-        format="dd/MM/yyyy"
-        value={value}
-        onChange={(date) => onChange(convertDateToValue(name, date))}
-        KeyboardButtonProps={{
-          "aria-label": "change date",
-        }}
-        {...others}
-      />
-    </MuiPickersUtilsProvider>
+    <>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <KeyboardDatePicker
+          label={label}
+          name={name}
+          inputVariant="outlined"
+          fullWidth
+          format="dd/MM/yyyy"
+          value={value}
+          onChange={(date) => onChange(convertDateToValue(name, date))}
+          KeyboardButtonProps={{
+            'aria-label': 'change date',
+          }}
+          maxDate={new Date()}
+          helperText={error && helperText}
+          {...others}
+        />
+      </MuiPickersUtilsProvider>
+    </>
   );
 };
 
