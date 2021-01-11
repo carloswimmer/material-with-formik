@@ -1,12 +1,21 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
   FormControl,
   FormControlLabel,
   Checkbox as MuiCheckbox,
   FormHelperText,
+  CheckboxProps,
 } from '@material-ui/core';
 
-const Checkbox = (props) => {
+interface MuiCheckboxProps extends CheckboxProps {
+  label: string;
+  error?: boolean;
+  helperText?: string | false;
+  value: boolean;
+  name: string;
+}
+
+const Checkbox = (props: MuiCheckboxProps) => {
   const {
     name,
     label,
@@ -18,14 +27,6 @@ const Checkbox = (props) => {
     ...others
   } = props;
 
-  const convertValueToChecked = useCallback((name, value) => {
-    const convertedEvent = {
-      target: { name, value },
-    };
-
-    return convertedEvent;
-  }, []);
-
   return (
     <FormControl error={error}>
       <FormControlLabel
@@ -34,9 +35,7 @@ const Checkbox = (props) => {
             name={name}
             color="primary"
             checked={value}
-            onChange={(e) =>
-              onChange(convertValueToChecked(name, e.target.checked))
-            }
+            onChange={onChange}
             onBlur={onBlur}
             inputProps={{ 'aria-label': 'primary checkbox' }}
             {...others}

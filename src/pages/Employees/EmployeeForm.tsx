@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { Grid, makeStyles, Theme } from '@material-ui/core';
-import { FieldMetaProps, Formik, FormikProps } from 'formik';
+import { Formik, FormikProps } from 'formik';
 
 import Input from '../../components/controls/Input';
 import Radio from '../../components/controls/Radio';
