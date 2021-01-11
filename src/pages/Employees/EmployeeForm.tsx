@@ -19,7 +19,7 @@ const genderItems = [
   { id: 'none', title: 'None' },
 ];
 
-const initialValues: FormValues = {
+const initialValues: FormValuesProps = {
   id: 0,
   fullName: '',
   email: '',
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-interface FormValues {
+interface FormValuesProps {
   id: number;
   fullName: string;
   email: string;
@@ -67,8 +67,8 @@ interface FormValues {
 const EmployeeForm: React.FC = () => {
   const classes = useStyles();
 
-  const handleEmployeeSubmit = useCallback(() => {
-    console.log('submitted! ');
+  const handleEmployeeSubmit = useCallback((formValues) => {
+    console.log('submitted! ', formValues);
   }, []);
 
   const {
@@ -82,7 +82,7 @@ const EmployeeForm: React.FC = () => {
   } = useFormik({
     initialValues,
     validationSchema: employeeSchema,
-    onSubmit: handleEmployeeSubmit,
+    onSubmit: (values) => handleEmployeeSubmit(values),
   });
 
   return (
