@@ -1,6 +1,12 @@
 import React, { useCallback } from 'react';
-import { Grid, makeStyles, Theme } from '@material-ui/core';
-import { Formik, FormikProps } from 'formik';
+import {
+  Backdrop,
+  CircularProgress,
+  Grid,
+  makeStyles,
+  Theme,
+} from '@material-ui/core';
+import { Formik, FormikHelpers, FormikProps } from 'formik';
 
 import Input from '../../components/controls/Input';
 import Radio from '../../components/controls/Radio';
@@ -50,6 +56,10 @@ const useStyles = makeStyles((theme: Theme) => ({
       margin: theme.spacing(1),
     },
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
 
 interface FormValuesProps {
@@ -67,9 +77,15 @@ interface FormValuesProps {
 const EmployeeForm: React.FC = () => {
   const classes = useStyles();
 
-  const handleEmployeeSubmit = useCallback((formValues) => {
-    console.log('submitted! ', formValues);
-  }, []);
+  const handleEmployeeSubmit = useCallback(
+    (formValues: FormValuesProps, actions: FormikHelpers<FormValuesProps>) => {
+      setTimeout(() => {
+        console.log('submitted! ', formValues);
+        actions.setSubmitting(false);
+      }, 3000);
+    },
+    [],
+  );
 
   const handleFieldProps = (
     formik: FormikProps<FormValuesProps>,
@@ -90,7 +106,7 @@ const EmployeeForm: React.FC = () => {
     <Formik
       initialValues={initialValues}
       validationSchema={employeeSchema}
-      onSubmit={(values) => handleEmployeeSubmit(values)}
+      onSubmit={(values, actions) => handleEmployeeSubmit(values, actions)}
     >
       {(formik) => (
         <form
@@ -152,8 +168,14 @@ const EmployeeForm: React.FC = () => {
                     size="large"
                     color="secondary"
                     text="Submit"
+                    disabled={formik.isSubmitting}
                   />
                 </Grid>
+                {formik.isSubmitting && (
+                  <Backdrop className={classes.backdrop} open>
+                    <CircularProgress color="secondary" />
+                  </Backdrop>
+                )}
                 <Grid item>
                   <Button
                     size="large"
