@@ -6,7 +6,7 @@ import {
   makeStyles,
   Theme,
 } from '@material-ui/core';
-import { Formik, FormikHelpers, FormikProps } from 'formik';
+import { Formik, FormikHelpers } from 'formik';
 
 import Input from '../../components/controls/Input';
 import Radio from '../../components/controls/Radio';
@@ -16,6 +16,7 @@ import DatePicker from '../../components/controls/DatePicker';
 import Button from '../../components/controls/Button';
 import * as Yup from 'yup';
 import * as employeeService from '../../services/employeeService';
+import handleFieldProps from '../../utils/handleFieldProps';
 
 const genderItems = [
   { id: 'male', title: 'Male' },
@@ -82,25 +83,11 @@ const EmployeeForm: React.FC = () => {
       setTimeout(() => {
         console.log('submitted! ', formValues);
         actions.setSubmitting(false);
+        actions.resetForm();
       }, 3000);
     },
     [],
   );
-
-  const handleFieldProps = (
-    formik: FormikProps<FormValuesProps>,
-    id: string,
-  ) => {
-    const { getFieldProps, getFieldMeta } = formik;
-
-    const errorMessage = getFieldMeta(id).touched && getFieldMeta(id).error;
-
-    return {
-      error: !!errorMessage,
-      helperText: errorMessage,
-      ...getFieldProps(id),
-    };
-  };
 
   return (
     <Formik

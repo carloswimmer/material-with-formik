@@ -33,7 +33,7 @@ const Checkbox = (props: MuiCheckboxProps) => {
         control={
           <MuiCheckbox
             name={name}
-            color="primary"
+            color="secondary"
             checked={value}
             onChange={onChange}
             onBlur={onBlur}
