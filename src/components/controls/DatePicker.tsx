@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import {
   KeyboardDatePicker,
   KeyboardDatePickerProps,
   MuiPickersUtilsProvider,
 } from '@material-ui/pickers';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 const DatePicker = (props: KeyboardDatePickerProps) => {
   const {
@@ -18,6 +19,20 @@ const DatePicker = (props: KeyboardDatePickerProps) => {
     ...others
   } = props;
 
+  const convertDateToValue = useCallback(
+    (date: MaterialUiPickersDate, name?: string): any => {
+      const event = {
+        target: {
+          name,
+          value: date,
+        },
+      };
+
+      return event;
+    },
+    [],
+  );
+
   return (
     <>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -28,7 +43,7 @@ const DatePicker = (props: KeyboardDatePickerProps) => {
           fullWidth
           format="dd/MM/yyyy"
           value={value}
-          onChange={onChange}
+          onChange={(date) => onChange(convertDateToValue(date, name))}
           KeyboardButtonProps={{
             'aria-label': 'change date',
           }}
