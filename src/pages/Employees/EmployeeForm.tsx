@@ -1,8 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, MouseEvent } from 'react';
 import {
   Backdrop,
   CircularProgress,
   Grid,
+  IconButton,
+  InputAdornment,
   makeStyles,
   Theme,
 } from '@material-ui/core';
@@ -17,6 +19,7 @@ import Button from '../../components/controls/Button';
 import * as Yup from 'yup';
 import * as employeeService from '../../services/employeeService';
 import handleFieldProps from '../../utils/handleFieldProps';
+import { Visibility, VisibilityOff } from '@material-ui/icons';
 
 const genderItems = [
   { id: 'male', title: 'Male' },
@@ -76,6 +79,7 @@ interface FormValuesProps {
 }
 
 const EmployeeForm: React.FC = () => {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const classes = useStyles();
 
   const handleEmployeeSubmit = useCallback(
@@ -85,6 +89,17 @@ const EmployeeForm: React.FC = () => {
         actions.setSubmitting(false);
         actions.resetForm();
       }, 3000);
+    },
+    [],
+  );
+
+  const handleClickShowPassword = useCallback(() => {
+    setShowPassword((state) => !state);
+  }, []);
+
+  const handleMouseDownPassword = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      event.preventDefault();
     },
     [],
   );
@@ -114,9 +129,24 @@ const EmployeeForm: React.FC = () => {
                 {...handleFieldProps(formik, 'email')}
               />
               <Input
-                label="Mobile"
-                id="mobile"
-                {...handleFieldProps(formik, 'mobile')}
+                label="Create Password"
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                {...handleFieldProps(formik, 'password')}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
               <Input
                 label="City"

@@ -10,6 +10,7 @@ const Input = (props: TextFieldProps) => {
     onBlur,
     error,
     helperText,
+    InputProps,
     ...others
   } = props;
 
@@ -24,6 +25,7 @@ const Input = (props: TextFieldProps) => {
       onBlur={onBlur}
       error={error}
       helperText={helperText}
+      InputProps={InputProps}
       {...others}
     />
   );
